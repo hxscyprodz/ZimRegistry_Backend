@@ -1,6 +1,7 @@
 import application from "./application";
+import config from "./config/env.config";
 
-const port = 3000;
+const port = config.PORT || 3000;
 
 const startServer = async() => {
     try{
