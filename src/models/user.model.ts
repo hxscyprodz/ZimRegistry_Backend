@@ -14,12 +14,11 @@ const UserSchema = new Schema<IUser>({
         minlength: [10, "Address must contain at least 10 characters"],
         maxlength: [90, "Address must not exceed 90 characters"]
     },
-    username: {
+    contactNumber: {
         type: String,
-        unique: [true, "Username already exist"],
-        required: [true, "Username not provided"],
-        minlength: [6, "Username must contain at least 6 characters"],
-        maxlength: [12, "Username must not exceed 12 characters"],
+        required: [true, "Phone number not provided"],
+        maxlength: 13,
+        unique: [true, "Phone number already exist"]
     },
     password: {
         type: String,

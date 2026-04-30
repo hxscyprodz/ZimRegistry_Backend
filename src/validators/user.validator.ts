@@ -4,9 +4,12 @@ import { ERole } from "../types/types";
 export const UserSchema = z.object({
     fullName: z.string().min(10),
     address: z.string().min(10).max(70),
-    username: z.string().min(6).max(12),
-    password: z.string().min(6).max(12),
+    contactNumber: z.string().length(13).trim().startsWith("+"),
+    password: z.string().min(6).max(12).trim(),
     role: z.nativeEnum(ERole).default(ERole.user)
-})
+});
 
-export type CreateUserSchema = z.infer<typeof UserSchema>;
+export const UserLoginSchema = z.object({
+    contactNumber: z.string().max(13).trim().startsWith("+"),
+    password: z.string().max(12).trim(),
+});

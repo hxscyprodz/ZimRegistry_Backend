@@ -8,7 +8,7 @@ export enum ERole {
 export interface IUser {
     fullName: string;
     address: string;
-    username: string;
+    contactNumber: string;
     password: string;
     role: ERole;
 };
@@ -19,6 +19,6 @@ export interface IRefreshToken {
 };
 
 export interface ITokenPayload {
-    username: string;
+    contactNumber: string;
     role: ERole;
 };
