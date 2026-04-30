@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import hashPassword from "../utils/auth/hashPassword";
 import { generateAccessToken, generateRefreshToken } from "../utils/auth/tokens";
 import User from "../models/user.model";
-import { success } from "zod";
+import RefreshToken from "../models/tokens.model";
 import { ERole } from "../types/types";
 
 const createUser = async(req: Request, res: Response) => {
@@ -17,15 +17,16 @@ const createUser = async(req: Request, res: Response) => {
         };
 
         //hashing password
-        const hashedPassword = await hashPassword(validData?.data?.password);
-        const { username, role } = validData.data;
-        const refreshToken = await generateAccessToken({username, role: role || ERole.user});
+        const { data } = validData;
+        const hashedPassword = await hashPassword(data?.password);
+        const refreshToken = await generateAccessToken({username: data.username, role: data.role || ERole.user});
 
-        //await User.create({ ...validData, password: hashedPassword, refreshToken});
+        const user = await User.create({...data, password: hashedPassword});
+        await RefreshToken.create({user: user._id, refreshToken});
 
         return res.status(StatusCodes.CREATED).json({ success: true, message: "User created successfully"});
     } catch(error: any) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: "Failed to create user"});
+        return res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: error});
     };
 };
 
