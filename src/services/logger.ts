@@ -6,8 +6,9 @@ import path from "path";
 const { printf, combine, json, colorize, timestamp } = format;
 
 const logDir = path.join(__dirname, '../../src/logs');
+const currentEnvironment = config?.APP_ENV || "development";
 
-if (config.APP_ENV === 'production' && !fs.existsSync(logDir)) {
+if (currentEnvironment === 'production' && !fs.existsSync(logDir)) {
     fs.mkdirSync(logDir, { recursive: true });
 };
 
@@ -16,12 +17,12 @@ const loggerFormat = printf(({ timestamp, level, message}) => {
 });
 
 const logger = createLogger({
-    level: config.APP_ENV === "development" ? "debug" : "info",
-    format: combine(timestamp(), config.APP_ENV === "development" ? combine(colorize(), loggerFormat) : json()),
+    level: currentEnvironment === "development" ? "debug" : "info",
+    format: combine(timestamp(), currentEnvironment === "development" ? combine(colorize(), loggerFormat) : json()),
     transports: [ new transports.Console() ] 
 });
 
-if(config.APP_ENV === "production") {
+if(currentEnvironment === "production") {
     logger.add(new DailyRotateFile({
         filename: path.join(logDir, 'combined-%DATE%.log'),
         datePattern: "YYYY-MM-DD",
