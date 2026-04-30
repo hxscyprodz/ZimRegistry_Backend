@@ -11,10 +11,14 @@ export interface IUser {
     username: string;
     password: string;
     role: ERole;
-    refreshToken: string;
 };
 
 export interface IRefreshToken {
     userId: mongoose.Types.ObjectId;
     refreshToken: string;
+};
+
+export interface ITokenPayload {
+    username: string;
+    role: ERole;
 };
