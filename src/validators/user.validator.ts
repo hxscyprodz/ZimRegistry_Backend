@@ -5,8 +5,9 @@ export const UserSchema = z.object({
     fullName: z.string().min(10),
     address: z.string().min(10).max(70),
     username: z.string().min(6).max(12),
+    contactNumber: z.string().length(10).trim().startsWith("0"),
     password: z.string().min(6).max(12),
-    role: z.nativeEnum(ERole).default(ERole.user).optional()
+    role: z.nativeEnum(ERole).default(ERole.user)
 })
 
 export type CreateUserSchema = z.infer<typeof UserSchema>;

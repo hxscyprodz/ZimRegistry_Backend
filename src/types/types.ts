@@ -8,6 +8,7 @@ export enum ERole {
 export interface IUser {
     fullName: string;
     address: string;
+    contactNumber: string;
     username: string;
     password: string;
     role: ERole;
