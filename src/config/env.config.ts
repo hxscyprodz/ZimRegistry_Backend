@@ -7,6 +7,8 @@ dotenv.config({ path: path.join(__dirname, '../../.env')});
 const mandatoryVariables = [
     "PORT",
     "APP_ENV",
+    "JWT_ACCESS_TOKEN",
+    "JWT_REFRESH_TOKEN"
 ];
 
 const missingVariables = mandatoryVariables.filter((variable) => !process.env[variable]);
@@ -25,7 +27,9 @@ if(missingVariables.length > 0) {
 
 const config = {
     PORT: process.env.PORT,
-    APP_ENV: process.env.APP_ENV
+    APP_ENV: process.env.APP_ENV,
+    JWT_ACCESS_TOKEN: process.env.JWT_ACCESS_TOKEN,
+    JWT_REFRESH_TOKEN: process.env.JWT_REFRESH_TOKEN
 };
 
 export default config;
