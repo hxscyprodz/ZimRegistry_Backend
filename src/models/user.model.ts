@@ -28,9 +28,6 @@ const UserSchema = new Schema<IUser>({
     role: {
         type: String,
         default: ERole.user
-    },
-    refreshToken: {
-        type: String,
     }
 }, {
     timestamps: true,
