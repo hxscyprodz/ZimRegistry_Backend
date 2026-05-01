@@ -19,7 +19,7 @@ const createUser = async(req: Request, res: Response) => {
 
         const { data } = validData;
         
-        const isUserAvailable = await User.findOne({ contactNumber: data?.contactNumber });
+        const isUserAvailable = await User.findOne({ contactNumber: data?.contactNumber, email: data?.email });
         
         if(isUserAvailable) {
             return res.status(StatusCodes.OK).json({ success: false, message: "Account already exist"});

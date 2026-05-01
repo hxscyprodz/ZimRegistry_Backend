@@ -20,6 +20,10 @@ const UserSchema = new Schema<IUser>({
         maxlength: 13,
         unique: [true, "Phone number already exist"]
     },
+    email: {
+        type: String,
+        unique: [true, "Email already exists"]
+    },
     password: {
         type: String,
         required: [true, "Password not provided"]
