@@ -1,4 +1,5 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
+import { Request } from "express";
 
 export enum ERole {
     user = "USER",
@@ -22,3 +23,10 @@ export interface ITokenPayload {
     contactNumber: string;
     role: ERole;
 };
+;
+
+export interface IUserTokenRequest extends Request {
+    user?: ITokenPayload;
+};
+
+
