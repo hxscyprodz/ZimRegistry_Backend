@@ -7,7 +7,9 @@ dotenv.config({ path: path.join(__dirname, '../../.env')});
 const mandatoryVariables = [
     "PORT",
     "APP_ENV",
-    "WHATSAPP_WEBHOOK_VERIFICATION_TOKEN"
+    "WHATSAPP_WEBHOOK_VERIFICATION_TOKEN",
+    "WHATSAPP_SYSTEM_TOKEN",
+    "WHATSAPP_PHONE_NUMBER_ID"
 ];
 
 const missingVariables = mandatoryVariables.filter((variable) => !process.env[variable]);
@@ -26,8 +28,9 @@ if(missingVariables.length > 0) {
 const config = {
     PORT: process.env.PORT || 5000,
     APP_ENV: process.env.APP_ENV || "development",
-    WHATSAPP_WEBHOOK_VERIFICATION_TOKEN: process.env.WHATSAPP_WEBHOOK_VERIFICATION_TOKEN
-
+    WHATSAPP_WEBHOOK_VERIFICATION_TOKEN: process.env.WHATSAPP_WEBHOOK_VERIFICATION_TOKEN,
+    WHATSAPP_PHONE_NUMBER_ID: process.env.WHATSAPP_PHONE_NUMBER_ID,
+    WHATSAPP_SYSTEM_TOKEN: process.env.WHATSAPP_SYSTEM_TOKEN
 };
 
 export default config;
