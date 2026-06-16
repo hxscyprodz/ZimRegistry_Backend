@@ -4,6 +4,7 @@ import {
   WebhookNotificationBody,
   InteractivePayLoad,
 } from "../../types/types";
+import CONVERSATION_CONTROLLER from "../conversation.controller";
 
 export const incomingMessages = async (req: Request, res: Response) => {
   const reqBody: WebhookNotificationBody = req.body;
@@ -16,13 +17,19 @@ export const incomingMessages = async (req: Request, res: Response) => {
       switch (notificationType) {
         case "text":
           const messageText = messages[0].text.body;
-          logger.warn(messageText);
+          await CONVERSATION_CONTROLLER.textReplyHandler(
+            clientNumber,
+            messageText,
+          );
           break;
         case "interactive":
           {
             const interactivePayload: InteractivePayLoad =
               messages[0].interactive;
-            logger.warn(interactivePayload);
+            await CONVERSATION_CONTROLLER.interactiveReplyHandler(
+              clientNumber,
+              interactivePayload,
+            );
           }
           break;
         case "image":
@@ -33,17 +40,6 @@ export const incomingMessages = async (req: Request, res: Response) => {
             );
             if (imagePayload.caption)
               logger.info(`Caption: ${imagePayload.caption}`);
-          }
-          break;
-
-        case "order":
-          {
-            logger.info(
-              "Processing WhatsApp catalog order from:",
-              clientNumber,
-            );
-            const rawOrder = messages[0].order;
-            logger.warn(rawOrder);
           }
           break;
         case "reaction":
