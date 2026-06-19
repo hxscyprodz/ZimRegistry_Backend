@@ -42,11 +42,7 @@ export interface ImageMessageNotification extends BaseMessageNotificationPayload
     }
 }
 
-export interface OrderMessageNotification
-  extends BaseMessageNotificationPayload {
-  type: "order";
-  order: Order;
-}
+
 export interface ReactionMessageNotification
   extends BaseMessageNotificationPayload {
   type: "reaction";
@@ -58,7 +54,6 @@ export interface ReactionMessageNotification
 
 export type MessageNotification =
   | InteractiveMessageNotification
-  | OrderMessageNotification
   | ReactionMessageNotification
   | ImageMessageNotification
   | Text;
@@ -98,44 +93,7 @@ export interface Text extends BaseMessageNotificationPayload {
 export interface Profile {
   name: string;
 }
-export interface Order {
-  catalog_id: string;
-  product_items: OrderItems[];
-  text: string;
-}
 
-export interface BookingItems {
-   productName: string;
-  quantity: number;
-  priceAtOrder: number;
-  productRetailerId: string;
-  unitPrice: number;
-  subtotal:number;
-}
-
-export interface WhatsAppOrderProductItem {
-  product_retailer_id: string;
-  quantity: number;
-  item_price?: number;
-  currency?: string;
-  brand?: string;
-  description?: string;
-  google_product_category?: string;
-}
-export interface OrderDeliveryFlowData {
-  orderNumber: string;
-  orderDate: string;
-  itemsList: string;
-  totalAmount: string;
-  currency: string;
-  itemCount: number;
-}
-export interface OrderItems {
-  product_retailer_id: string;
-  quantity: string;
-  item_price: string;
-  currency: string;
-}
 
 export interface InteractiveButtonReplyPayload {
   type: "button_reply";
@@ -156,29 +114,13 @@ export interface InteractiveNfmReplyNotification {
   type: "nfm_reply";
 }
 
-export type FlowsForm = Enquiry_Feedback_Form | Voucher_Purchase_Form;
-export type FlowResponseObject = {
-  [key: string]: FlowsForm;
-};
-
 export interface Enquiry_Feedback_Form {
   wouldYouRecommend: "yes" | "no";
   site: string;
   feedbackComment: string;
   flow_token: string;
 }
-export interface Voucher_Purchase_Form {
-  location: string;
-  voucherType: string;
-  payment_method: "ecocash";
-  mobile_payment_number: string;
-  flow_token: string;
-}
-export interface Balance_Check_Form {
-  location: string;
-  voucher: string;
-  flow_token: string;
-}
+
 export interface Nfm_Reply {
   response_json: string;
   body: "Sent";
@@ -492,19 +434,6 @@ export interface InteractiveFlowObject extends InteractiveBaseObject {
   };
 }
 
-
-export type FlowFormData = Enquiry_Feedback_Form | Voucher_Purchase_Form | Balance_Check_Form;
-/**
- * Internal response format for flow handling
- * Used for internal flow processing before converting to WhatsApp format
- */
-export interface FlowResponse {
-  nextScreen: string | null;
-  data: FlowFormData | Record<string, unknown>;
-  completed?: boolean;
-  error?: string;
-}
-
 export interface WhatsAppFlowRequest {
   version: string;
   action: string; // "INIT", "data_exchange", "ping", etc.
@@ -512,27 +441,6 @@ export interface WhatsAppFlowRequest {
   data: Record<string, unknown>;
   flow_token: string;
 }
-
-/**
- * Interface for WhatsApp order product item
- */
-export interface WhatsAppOrderProductItem {
-  product_retailer_id: string;
-  quantity: number;
-  item_price?: number;
-  currency?: string;
-}
-/**
- * Interface for WhatsApp order payload
- */
-export interface WhatsAppOrderPayload {
-  catalog_id: string;
-  text?: string;
-  product_items: WhatsAppOrderProductItem[];
-}
-
-
-
 export interface ServiceResponse<T = any> {
   success: boolean;
   data?: T;
