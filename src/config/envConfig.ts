@@ -9,7 +9,10 @@ const mandatoryVariables = [
     "APP_ENV",
     "WHATSAPP_WEBHOOK_VERIFICATION_TOKEN",
     "WHATSAPP_SYSTEM_TOKEN",
-    "WHATSAPP_PHONE_NUMBER_ID"
+    "WHATSAPP_PHONE_NUMBER_ID",
+    "MONGODB_USERNAME",
+    "MONGODB_PASSWORD",
+    "MONGODB_HOST"
 ];
 
 const missingVariables = mandatoryVariables.filter((variable) => !process.env[variable]);
@@ -30,7 +33,12 @@ const config = {
     APP_ENV: process.env.APP_ENV || "development",
     WHATSAPP_WEBHOOK_VERIFICATION_TOKEN: process.env.WHATSAPP_WEBHOOK_VERIFICATION_TOKEN,
     WHATSAPP_PHONE_NUMBER_ID: process.env.WHATSAPP_PHONE_NUMBER_ID,
-    WHATSAPP_SYSTEM_TOKEN: process.env.WHATSAPP_SYSTEM_TOKEN
+    WHATSAPP_SYSTEM_TOKEN: process.env.WHATSAPP_SYSTEM_TOKEN,
+    MONGODB_USERNAME: process.env.MONGODB_USERNAME,
+    MONGODB_PASSWORD: process.env.MONGODB_PASSWORD,
+    MONGOD_HOST: process.env.MONGODB_HOST || "0.0.0.0",
+    MONGODB_MAX_RETRIES: process.env.MONGODB_CONNECTION_MAX_RETRIES || 5,
+    MONGODB_CONNECTION_RETRY_DELAY: Number(process.env.MONGODB_CONNECTION_RETRY_DELAY) || 5000
 };
 
 export default config;
