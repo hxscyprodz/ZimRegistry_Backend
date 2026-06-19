@@ -1,10 +1,10 @@
-import express, { Request, Response, Application } from 'express';
-import { Server } from 'socket.io';
-import { createServer } from 'node:http';
-import config  from './config/envConfig';
-import logger from './services/logger';
-import whatsappRoutes from './routes/whatsapp.routes';
-
+import express, { Request, Response, Application } from "express";
+import { Server } from "socket.io";
+import { createServer } from "node:http";
+import { connectDatabase } from "./config/databaseConfig";
+import config from "./config/envConfig";
+import logger from "./services/logger";
+import whatsappRoutes from "./routes/whatsapp.routes";
 
 const app: Application = express();
 const server = createServer(app);
@@ -18,21 +18,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use(whatsappRoutes);
 
 io.on("connection", (socket) => {
-    logger.info('User connected...');
+  logger.info("User connected...");
 });
 
 //health check
-app.get('/health', (req: Request, res: Response) => {
-  res.send('ZimRegistry Backend is running with TypeScript!');
+app.get("/health", (req: Request, res: Response) => {
+  res.send("ZimRegistry Backend is running with TypeScript!");
 });
 
-app.listen(port, () => {
-    try{
-        logger.info(`[server]: Server is running at http://localhost:${port}`);
-    } catch(error: any) {
-        logger.error(`Error occured: ${error.message}`);
-        process.exit(1);
-    }
-});
+const startServer = async () => {
+  const FLAG = "SERVER";
+  try {
+    await connectDatabase();
+    server.listen(port, () =>
+      logger.info(`[ ${FLAG} ] - Server running on port ${port}...`),
+    );
+  } catch (error: any) {
+    logger.error(`[ ${FLAG} ] - Error occurred: ${error?.message}`);
+    process.exit(1);
+  }
+};
 
-export default app;
+startServer();
