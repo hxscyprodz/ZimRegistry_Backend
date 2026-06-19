@@ -1,4 +1,5 @@
-//INCOMING MESSAGE NOTIFICATION PAYLOAD
+import * as z from "zod";
+import { VUser } from "../validators/validators";
 export interface WebhookNotificationBody {
   object: string;
   entry: Entry[];
@@ -446,3 +447,5 @@ export interface ServiceResponse<T = any> {
   data?: T;
   error?: string;
 }
+
+export type TUser = z.infer<typeof VUser>
