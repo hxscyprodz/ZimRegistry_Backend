@@ -1,4 +1,5 @@
 import express, { Request, Response, Application } from "express";
+import cors from "cors";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import { connectDatabase } from "./config/databaseConfig";
@@ -11,6 +12,13 @@ const server = createServer(app);
 const io = new Server(server);
 const port = config.PORT;
 
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
