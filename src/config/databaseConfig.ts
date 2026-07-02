@@ -13,7 +13,7 @@ const FLAG = "DATABASE";
 
 export const connectDatabase = async (attempt = 1) => {
   try {
-    const connectionString = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGOD_HOST}`;
+    const connectionString = `mongodb://localhost/zimregistry?retryWrites=true&w=majority`;
     const response = await connect(connectionString, {
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
@@ -42,3 +42,13 @@ connection.on("disconnected", () => {
 connection.on("error", (error) => {
   logger.error(`[ ${FLAG} ] : Post-connection error, ${error}`);
 });
+
+export const flashDatabase = async () => {
+  try {
+    logger.warn(`[ ${FLAG} ] : Flashing database...`);
+    await connection.dropDatabase();
+    logger.info(`[ ${FLAG} ] : Database flashed successfully.`);
+  } catch (error) {
+    logger.error(`[ ${FLAG} ] : Error dropping database - ${error}`);
+  }
+};

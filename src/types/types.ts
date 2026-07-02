@@ -1,5 +1,151 @@
 import * as z from "zod";
 import { VUser } from "../validators/validators";
+
+export enum EStatus {
+  PENDING = "pending",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+}
+export enum ERole {
+  SUPER_ADMIN = "super-admin",
+  ADMIN = "admin",
+  OFFICER = "officer",
+  SUPERVISOR = "supervisor",
+}
+
+export interface ILocation {
+  province: string;
+  district: string;
+  town: string;
+  ward?: number;
+  address: string;
+}
+
+export interface IStation {
+  createdBy: string;
+  stationId: string;
+  stationName: string;
+  location: ILocation;
+  numberOfStaff: number;
+}
+
+export interface IHospital {
+  createdBy: string;
+  hospitalId: string;
+  hospitalName: string;
+  district: string;
+  town: string;
+}
+
+export interface IStaff {
+  createdBy: string;
+  stationId: string;
+  nationalIdNumber: string;
+  staffId: string;
+  firstName: string;
+  surname: string;
+  email: string;
+  phone: string;
+  password: string;
+  status: boolean;
+  role: ERole;
+}
+
+export interface IProvince {
+  name: string;
+  provinceId: string;
+  districts: IDistrict[];
+}
+
+export interface IDistrict {
+  districtId: string;
+  provinceId: string;
+  name: string;
+}
+
+export interface IBaseApplication {
+  applicationType: "birth" | "national-id";
+  isPrinted: boolean;
+  applicationId: string;
+  stationId: string;
+  phone: string;
+  approvedBy?: string;
+  approvedDate?: Date;
+  rejectedBy?: string;
+  rejectedDate?: Date;
+  rejectionReason?: string;
+  status: EStatus;
+  applicationDate: Date;
+}
+
+export interface INationalIdApplication extends IBaseApplication {
+  applicationType: "national-id";
+  idNumber: string;
+  documents: {
+    birthCertificate: string;
+  };
+}
+export interface IBirthApplication extends IBaseApplication {
+  applicationType: "birth";
+  firstName: string;
+  middleNames?: string[];
+  surname: string;
+  sex: string;
+  dateOfBirth: string;
+  placeOfBirth: string;
+  hospitalOfBirthId: string;
+  address: string;
+  fatherIdNumber?: string;
+  motherIdNumber: string;
+  documents: {
+    hospitalRecord: string;
+    motherNationalId: string;
+    fatherNationalId?: string;
+  };
+}
+
+export interface IBaseDocument {
+  nationalIdNumber: string;
+  firstName: string;
+  middleNames?: string[];
+  surname: string;
+  dateOfBirth: string;
+  issuedBy: string;
+  dateOfIssue: Date;
+  placeOfIssue: string;
+  villageOfOrigin: string;
+  placeOfBirth: string;
+}
+
+export interface INationalIdDocument extends IBaseDocument {
+  imageUrl: string;
+}
+
+export interface IBirthCertificate extends IBaseDocument {
+  sex: string;
+  dateOfBirth: string;
+  hospitalOfBirth: string;
+  mother: {
+    idNumber: string;
+    firstName: string;
+    surname: string;
+    birthPlace: string;
+  };
+  father?: {
+    idNumber: string;
+    firstName: string;
+    surname: string;
+    birthPlace: string;
+  };
+  informant: {
+    name: string;
+    qualification: "Mother" | "Father" | "Other";
+    address: string;
+    phoneNumber: string;
+    nationalIdNumber: string;
+  };
+  dateOfRegistration: Date;
+}
 export interface WebhookNotificationBody {
   object: string;
   entry: Entry[];
@@ -26,26 +172,23 @@ export interface BaseMessageNotificationPayload {
   id: string;
   timestamp: string;
 }
-export interface InteractiveMessageNotification
-  extends BaseMessageNotificationPayload {
+export interface InteractiveMessageNotification extends BaseMessageNotificationPayload {
   type: "interactive";
   interactive: InteractivePayLoad;
 }
 
 export interface ImageMessageNotification extends BaseMessageNotificationPayload {
-    type: "image",
-    image: {
-        mime_type: string;
-        sha256: string;
-        id: string;
-        url: string;
-        caption?: string;
-    }
+  type: "image";
+  image: {
+    mime_type: string;
+    sha256: string;
+    id: string;
+    url: string;
+    caption?: string;
+  };
 }
 
-
-export interface ReactionMessageNotification
-  extends BaseMessageNotificationPayload {
+export interface ReactionMessageNotification extends BaseMessageNotificationPayload {
   type: "reaction";
   reaction: {
     message_id: string; //"MESSAGE_ID",
@@ -94,7 +237,6 @@ export interface Text extends BaseMessageNotificationPayload {
 export interface Profile {
   name: string;
 }
-
 
 export interface InteractiveButtonReplyPayload {
   type: "button_reply";
@@ -399,7 +541,6 @@ export interface BaseInteractiveActionObject {
   };
 }
 
-
 export interface InteractiveBaseObject {
   header?: {
     type: "text" | "image" | "document" | "video";
@@ -448,4 +589,4 @@ export interface ServiceResponse<T = any> {
   error?: string;
 }
 
-export type TUser = z.infer<typeof VUser>
+export type TUser = z.infer<typeof VUser>;
