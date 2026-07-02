@@ -3,8 +3,8 @@ import { TUser } from "../types/types";
 
 const UserSchema = new Schema<TUser>(
   {
-    phoneNumber: { type: String, required: true },
-    lastSession: { type: Date, default: new Date() },
+    phone: { type: String, required: true },
+    lastSessionDate: { type: Date, default: new Date() },
     totalApplications: { type: Number, default: 0 },
   },
   {
