@@ -1,5 +1,22 @@
 import * as z from "zod";
 import { VUser } from "../validators/validators";
+import { Request } from "express";
+
+export interface CustomRequest extends Request {
+  user?: any;
+}
+
+export interface IProvince {
+  provinceId: string;
+  name: string;
+  districts: IDistrict[];
+}
+
+export interface IDistrict {
+  districtId: string;
+  provinceId: string;
+  name: string;
+}
 
 export enum EStatus {
   PENDING = "pending",
@@ -7,10 +24,10 @@ export enum EStatus {
   REJECTED = "rejected",
 }
 export enum ERole {
-  SUPER_ADMIN = "super-admin",
-  ADMIN = "admin",
-  OFFICER = "officer",
-  SUPERVISOR = "supervisor",
+  SUPER_ADMIN = "Super Administrator",
+  ADMIN = "Administrator",
+  OFFICER = "Registrar Officer",
+  SUPERVISOR = "Supervisor",
 }
 
 export interface ILocation {
@@ -33,7 +50,8 @@ export interface IHospital {
   createdBy: string;
   hospitalId: string;
   hospitalName: string;
-  location: ILocation;
+  district: string;
+  town: string;
 }
 
 export interface IStaff {
