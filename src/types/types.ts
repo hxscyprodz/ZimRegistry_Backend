@@ -1,5 +1,10 @@
 import * as z from "zod";
 import { VUser } from "../validators/validators";
+import { Request } from "express";
+
+export interface CustomRequest extends Request {
+  user?: any;
+}
 
 export enum EStatus {
   PENDING = "pending",
@@ -7,10 +12,10 @@ export enum EStatus {
   REJECTED = "rejected",
 }
 export enum ERole {
-  SUPER_ADMIN = "super-admin",
-  ADMIN = "admin",
-  OFFICER = "officer",
-  SUPERVISOR = "supervisor",
+  SUPER_ADMIN = "Super Administrator",
+  ADMIN = "Administrator",
+  OFFICER = "Registrar Officer",
+  SUPERVISOR = "Supervisor",
 }
 
 export interface ILocation {

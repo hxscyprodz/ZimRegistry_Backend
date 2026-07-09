@@ -6,6 +6,7 @@ import { connectDatabase } from "./config/databaseConfig";
 import config from "./config/envConfig";
 import logger from "./services/logger";
 import whatsappRoutes from "./routes/whatsapp.routes";
+import authRoutes from "./routes/dashboard/auth.route";
 
 const app: Application = express();
 const server = createServer(app);
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //routes
 app.use(whatsappRoutes);
+app.use("/auth", authRoutes);
 
 io.on("connection", (socket) => {
   logger.info("User connected...");
