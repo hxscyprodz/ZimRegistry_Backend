@@ -1,11 +1,11 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 import { IStaff, ERole } from "../types/types";
 import { applyAutoIncrement } from "../utils/autoIncrement";
 
 const StaffSchema = new Schema<IStaff>(
   {
     stationId: { type: String, required: true },
-    createdBy: { type: String, required: true },
+    createdBy: { type: Types.ObjectId, required: true, ref: "Staff" },
     firstName: { type: String, required: true },
     surname: { type: String, required: true },
     nationalIdNumber: { type: String, required: true },

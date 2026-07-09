@@ -5,7 +5,6 @@ import { StatusCodes } from "http-status-codes";
 import { StaffSchema } from "../../validators/validators";
 import { generateAccessToken } from "../../services/jwt";
 import { comparePassword } from "../../services/bcrypt";
-import { formatStaffId } from "../../utils/formatStaffId";
 import { CustomRequest } from "../../types/types";
 
 const FLAG = "AUTH";
@@ -54,7 +53,8 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const staffData = {
-      employeeNumber: formatStaffId(staff.staffId),
+      id: staff._id,
+      employeeNumber: staff.staffId,
       role: staff.role,
       name: `${staff.firstName} ${staff.surname}`,
       stationId: staff.stationId,

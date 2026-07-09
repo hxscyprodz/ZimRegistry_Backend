@@ -3,10 +3,12 @@ import cors from "cors";
 import { Server } from "socket.io";
 import { createServer } from "node:http";
 import { connectDatabase } from "./config/databaseConfig";
+import protectRoute from "./middleware/auth.middleware";
 import config from "./config/envConfig";
 import logger from "./services/logger";
 import whatsappRoutes from "./routes/whatsapp.routes";
 import authRoutes from "./routes/dashboard/auth.route";
+import staffRoutes from "./routes/dashboard/staff.route";
 
 const app: Application = express();
 const server = createServer(app);
@@ -16,7 +18,7 @@ const port = config.PORT;
 app.use(
   cors({
     origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
@@ -26,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 //routes
 app.use(whatsappRoutes);
 app.use("/auth", authRoutes);
+app.use("/staff", protectRoute, staffRoutes);
 
 io.on("connection", (socket) => {
   logger.info("User connected...");
