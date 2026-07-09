@@ -18,3 +18,14 @@ export const StaffSchema = z.object({
     .trim()
     .min(6, { message: "Password must be at least 6 characters" }),
 });
+
+export const CreateStaffDTO = z.object({
+  firstName: z.string(),
+  surname: z.string(),
+  nationalIdNumber: z.string(),
+  phone: z.string(),
+  email: z.string(),
+  password: z.string(),
+  role: z.string(),
+  stationId: z.string(),
+});

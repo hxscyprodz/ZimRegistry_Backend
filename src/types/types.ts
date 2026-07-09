@@ -1,6 +1,7 @@
 import * as z from "zod";
 import { VUser } from "../validators/validators";
 import { Request } from "express";
+import { Types } from "mongoose";
 
 export interface CustomRequest extends Request {
   user?: any;
@@ -55,7 +56,7 @@ export interface IHospital {
 }
 
 export interface IStaff {
-  createdBy: string;
+  createdBy: Types.ObjectId;
   stationId: string;
   nationalIdNumber: string;
   staffId: string;

@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
+import { Types} from "mongoose";
 import config from "../config/envConfig";
 import logger from "./logger";
 import { ERole } from "../types/types";
 
 interface StaffMember {
   employeeNumber: string;
+  id: Types.ObjectId;
   role: ERole;
   name: string;
   stationId: string;
