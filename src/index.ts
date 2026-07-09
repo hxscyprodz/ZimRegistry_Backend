@@ -9,6 +9,7 @@ import logger from "./services/logger";
 import whatsappRoutes from "./routes/whatsapp.routes";
 import authRoutes from "./routes/dashboard/auth.route";
 import staffRoutes from "./routes/dashboard/staff.route";
+import stationRoutes from "./routes/dashboard/station.route";
 
 const app: Application = express();
 const server = createServer(app);
@@ -29,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(whatsappRoutes);
 app.use("/auth", authRoutes);
 app.use("/staff", protectRoute, staffRoutes);
+app.use("/stations", protectRoute, stationRoutes);
 
 io.on("connection", (socket) => {
   logger.info("User connected...");
