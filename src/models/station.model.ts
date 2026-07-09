@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { IStation } from "../types/types";
+import { applyAutoIncrement } from "../utils/autoIncrement";
 
 const StationSchema = new Schema<IStation>(
   {
@@ -16,8 +17,16 @@ const StationSchema = new Schema<IStation>(
   },
   {
     timestamps: true,
+    toJSON: { getters: true },
+    toObject: { getters: true },
   },
 );
+
+applyAutoIncrement(StationSchema, {
+  idField: "stationId",
+  sequenceId: "station_seq",
+  prefix: "ST",
+});
 
 const Station = model<IStation>("Station", StationSchema);
 export default Station;

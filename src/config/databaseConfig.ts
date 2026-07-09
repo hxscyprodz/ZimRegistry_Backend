@@ -13,7 +13,7 @@ const FLAG = "DATABASE";
 
 export const connectDatabase = async (attempt = 1) => {
   try {
-    const connectionString = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGOD_HOST}`;
+    const connectionString = `mongodb://127.0.0.1/zimregistry`;
     const response = await connect(connectionString, {
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
