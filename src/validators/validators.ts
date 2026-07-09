@@ -29,3 +29,13 @@ export const CreateStaffDTO = z.object({
   role: z.string(),
   stationId: z.string(),
 });
+
+export const CreateStationDTO = z.object({
+  stationName: z.string(),
+  location: z.object({
+    province: z.string(),
+    district: z.string(),
+    town: z.string(),
+    address: z.string(),
+  }),
+});
