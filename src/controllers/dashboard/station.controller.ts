@@ -109,7 +109,7 @@ export const updateStation = async (req: Request, res: Response) => {
     const updatedStation = await Station.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
 
     if (!updatedStation) {
