@@ -20,9 +20,9 @@ export interface IDistrict {
 }
 
 export enum EStatus {
-  PENDING = "pending",
-  APPROVED = "approved",
-  REJECTED = "rejected",
+  PENDING = "Pending",
+  APPROVED = "Approved",
+  REJECTED = "Rejected",
 }
 export enum ERole {
   SUPER_ADMIN = "Super Administrator",

@@ -1,11 +1,11 @@
 import { Schema, model } from "mongoose";
 import { IBirthApplication, EStatus } from "../../types/types";
+import { applyAutoIncrement } from "../../utils/autoIncrement";
 
 const BirthApplicationSchema = new Schema<IBirthApplication>(
   {
-    applicationId: { type: String, required: true },
     applicationType: { type: String, default: "birth" },
-    stationId: { type: String, required: true },
+    stationId: { type: String, required: true, ref: "Station" },
     phone: { type: String, required: true },
     firstName: { type: String, required: true },
     middleNames: { type: [String] },
@@ -32,8 +32,16 @@ const BirthApplicationSchema = new Schema<IBirthApplication>(
   },
   {
     timestamps: true,
+    toJSON: { getters: true },
+    toObject: { getters: true },
   },
 );
+
+applyAutoIncrement(BirthApplicationSchema, {
+  prefix: "BA",
+  idField: "applicationId",
+  sequenceId: "birth_application_seq",
+});
 
 const BirthApplication = model<IBirthApplication>(
   "BirthApplication",

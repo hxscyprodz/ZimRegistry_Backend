@@ -11,6 +11,7 @@ import authRoutes from "./routes/dashboard/auth.route";
 import staffRoutes from "./routes/dashboard/staff.route";
 import provinceRoutes from "./routes/dashboard/province.route";
 import stationRoutes from "./routes/dashboard/station.route";
+import birthApplicationRoutes from "./routes/dashboard/birthApplication.routes";
 
 const app: Application = express();
 const server = createServer(app);
@@ -33,6 +34,11 @@ app.use("/auth", authRoutes);
 app.use("/staff", protectRoute, staffRoutes);
 app.use("/stations", protectRoute, stationRoutes);
 app.use("/provinces", protectRoute, provinceRoutes);
+app.use(
+  "/applications/birth-certificates",
+  protectRoute,
+  birthApplicationRoutes,
+);
 
 io.on("connection", (socket) => {
   logger.info("User connected...");
