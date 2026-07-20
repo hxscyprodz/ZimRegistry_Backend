@@ -84,6 +84,7 @@ export interface IBaseApplication {
 }
 
 export interface INationalIdApplication extends IBaseApplication {
+  nationalIdNumber: string;
   applicationType: "national-id";
   idNumber: string;
   documents: {
