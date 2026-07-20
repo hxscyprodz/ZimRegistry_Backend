@@ -12,6 +12,7 @@ import staffRoutes from "./routes/dashboard/staff.route";
 import provinceRoutes from "./routes/dashboard/province.route";
 import stationRoutes from "./routes/dashboard/station.route";
 import birthApplicationRoutes from "./routes/dashboard/birthApplication.routes";
+import nationalIDApplicationRoutes from "./routes/dashboard/nationalIDApplications.route";
 
 const app: Application = express();
 const server = createServer(app);
@@ -39,6 +40,7 @@ app.use(
   protectRoute,
   birthApplicationRoutes,
 );
+app.use("/applications/national-id", protectRoute, nationalIDApplicationRoutes);
 
 io.on("connection", (socket) => {
   logger.info("User connected...");

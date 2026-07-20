@@ -1,10 +1,11 @@
 import { Schema, model } from "mongoose";
 import { INationalIdApplication, EStatus } from "../../types/types";
+import { applyAutoIncrement } from "../../utils/autoIncrement";
 
 const NationalApplicationSchema = new Schema<INationalIdApplication>(
   {
-    applicationId: { type: String, required: true },
     applicationType: { type: String, default: "national-id" },
+    nationalIdNumber: { type: String, required: true },
     stationId: { type: String, required: true },
     phone: { type: String, required: true },
     status: { type: String, default: EStatus.PENDING },
@@ -20,8 +21,16 @@ const NationalApplicationSchema = new Schema<INationalIdApplication>(
   },
   {
     timestamps: true,
+    toJSON: { getters: true },
+    toObject: { getters: true },
   },
 );
+
+applyAutoIncrement(NationalApplicationSchema, {
+  prefix: "NID",
+  idField: "applicationId",
+  sequenceId: "national_id_application_seq",
+});
 
 const NationalIdApplication = model<INationalIdApplication>(
   "NationalIdApplication",
