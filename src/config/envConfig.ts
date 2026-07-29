@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import path from "path";
+import logger from "../services/logger";
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
@@ -11,7 +12,7 @@ const missingEnvironmentVariables = mandatoryEnvironmentVariables.filter(
 
 if (missingEnvironmentVariables.length > 0) {
   const missingEnvString = JSON.stringify(missingEnvironmentVariables);
-  console.error(
+  logger.error(
     `Missing environment variables: ${missingEnvString.substring(
       1,
       missingEnvString.length - 1,
