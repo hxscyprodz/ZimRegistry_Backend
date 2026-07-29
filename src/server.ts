@@ -4,8 +4,10 @@ import { Server, Socket } from "socket.io";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import { config } from "../src/config/envConfig";
 
 const app = express();
+const port = config.PORT;
 const server = createServer(app);
 const io = new Server(server);
 
@@ -32,8 +34,8 @@ io.on("connection", (socket: Socket) => {
 
 export const startServer = async () => {
   try {
-    server.listen(3000, () => {
-      console.log(`Server is running on port 3000`);
+    server.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
     });
   } catch (error: any) {
     console.log(error.message);
