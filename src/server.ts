@@ -6,6 +6,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import { config } from "../src/config/envConfig";
 import logger from "../src/services/logger";
+import { connectDB } from "./config/db";
 
 const app = express();
 const port = config.PORT;
@@ -35,6 +36,7 @@ io.on("connection", (socket: Socket) => {
 
 export const startServer = async () => {
   try {
+    await connectDB();
     server.listen(port, () => {
       logger.info(`Server is running on port ${port}`);
     });
