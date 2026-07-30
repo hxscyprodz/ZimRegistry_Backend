@@ -3,22 +3,9 @@ import { Pool } from "pg";
 import logger from "../services/logger";
 import { config } from "./envConfig";
 
-<<<<<<< HEAD
-const {
-  POSTGRESQL_DB,
-  POSTGRESQL_HOST,
-  POSTGRESQL_PASSWORD,
-  POSTGRESQL_PORT,
-  POSTGRESQL_USERNAME,
-} = config;
-
-export const pool = new Pool({
-  connectionString: `postgresql://${POSTGRESQL_USERNAME}:${POSTGRESQL_PASSWORD}@${POSTGRESQL_HOST}:${POSTGRESQL_PORT}/${POSTGRESQL_DB}`,
-=======
 
 export const pool = new Pool({
   connectionString: config.POSTGRESQL_URL,
->>>>>>> 2c1d70e (Add drizzle postgres database connection)
 });
 
 export const db = drizzle({ client: pool });
