@@ -8,6 +8,7 @@ import morgan from "morgan";
 import { config } from "../src/config/envConfig";
 import logger from "../src/services/logger";
 import { connectDB } from "./config/db";
+import { errorHandlerMiddleware } from "./controllers/error.controller";
 
 const app = express();
 const port = config.PORT;
@@ -35,6 +36,7 @@ io.on("connection", (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
 });
 
+app.use(errorHandlerMiddleware);
 app.use(notFoundMiddleware);
 
 export const startServer = async () => {
