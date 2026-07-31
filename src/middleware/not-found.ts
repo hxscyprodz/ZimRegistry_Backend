@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
+import CustomError from "../utils/CustomError";
+
 export const notFoundMiddleware = (
   req: Request,
   res: Response,
@@ -11,5 +13,6 @@ export const notFoundMiddleware = (
     message: "Route not found",
     error: error.message
   });
-  next();
+  const err =new CustomError(error.message, StatusCodes.NOT_FOUND);
+  next(err);
 };
