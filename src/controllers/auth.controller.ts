@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { loginSchema, registerSchema } from "../validators/validators";
+import { hashPassword, comparePassword } from "../services/bcrypt";
 import { users } from "../db/schemas";
 import { db } from "../config/db";
 import CustomError from "../utils/CustomError";
@@ -33,7 +34,10 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
-    const isCorrectPassword = user[0]?.password === password;
+    const isCorrectPassword = await comparePassword(
+      password,
+      user[0]?.password!,
+    );
 
     if (!isCorrectPassword) {
       logger.warn(
@@ -69,7 +73,7 @@ export const login = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   const FLAG = "USER_REGISTRATION";
-  const isRequestValid = registerSchema.safeParse(req.body);
+  let isRequestValid = registerSchema.safeParse(req.body);
   if (!isRequestValid.success) {
     return res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
@@ -101,6 +105,9 @@ export const register = async (req: Request, res: Response) => {
         data: null,
       });
     }
+
+    const hashedPassword = await hashPassword(password);
+    isRequestValid.data.password = hashedPassword;
 
     const user = await db.insert(users).values(isRequestValid.data).returning({
       id: users.id,
