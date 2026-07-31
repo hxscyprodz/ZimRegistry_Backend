@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { loginSchema, registerSchema } from "../validators/validators";
+import { hashPassword, comparePassword } from "../services/bcrypt";
 import { users } from "../db/schemas";
 import { db } from "../config/db";
 import CustomError from "../utils/CustomError";
@@ -20,12 +21,12 @@ export const login = async (req: Request, res: Response) => {
   }
   try {
     const { email, password } = isRequestValid.data;
-    const user = await db
+    const [user] = await db
       .select()
       .from(users)
       .where(eq(users.email, email))
       .limit(1);
-    if (user.length === 0) {
+    if (!user) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
         success: false,
         message: "Credentials provided are invalid",
@@ -33,11 +34,11 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
-    const isCorrectPassword = user[0]?.password === password;
+    const isCorrectPassword = await comparePassword(password, user.password);
 
     if (!isCorrectPassword) {
       logger.warn(
-        `[ ${FLAG} ] - Login attempt for user : ${user[0]?.id} failed to wrong password`,
+        `[ ${FLAG} ] - Login attempt for user : ${user.id} failed to wrong password`,
       );
 
       return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -47,16 +48,14 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
-    logger.info(
-      `[ ${FLAG} ] - Login attempt for user : ${user[0]?.id} successful`,
-    );
+    logger.info(`[ ${FLAG} ] - Login attempt for user : ${user.id} successful`);
 
     return res.status(StatusCodes.OK).json({
       success: true,
       message: "Login successful",
       data: {
-        id: user[0]?.id,
-        email: user[0]?.email,
+        id: user.id,
+        email: user.email,
       },
     });
   } catch (error: any) {
@@ -78,7 +77,16 @@ export const register = async (req: Request, res: Response) => {
     });
   }
   try {
-    const { email, password, confirmPassword } = isRequestValid.data;
+    const {
+      email,
+      password,
+      confirmPassword,
+      firstName,
+      middleNames,
+      surname,
+      nationalIdNumber,
+      phoneNumber,
+    } = isRequestValid.data;
 
     if (password !== confirmPassword) {
       return res.status(StatusCodes.BAD_REQUEST).json({
@@ -88,13 +96,13 @@ export const register = async (req: Request, res: Response) => {
       });
     }
 
-    const userExists = await db
+    const [userExists] = await db
       .select()
       .from(users)
       .where(eq(users.email, email))
       .limit(1);
 
-    if (userExists.length > 0) {
+    if (userExists) {
       return res.status(StatusCodes.CONFLICT).json({
         success: false,
         message: "User already exists",
@@ -102,19 +110,28 @@ export const register = async (req: Request, res: Response) => {
       });
     }
 
-    const user = await db.insert(users).values(isRequestValid.data).returning({
+    const hashedPassword = await hashPassword(password);
+    const formattedData = {
+      firstName,
+      middleNames,
+      surname,
+      nationalIdNumber,
+      phoneNumber,
+      email,
+      password: hashedPassword,
+    };
+
+    const [user] = await db.insert(users).values(formattedData).returning({
       id: users.id,
     });
 
-    logger.info(
-      `[ ${FLAG} ] - User created successfully with id: ${user[0]?.id}`,
-    );
+    logger.info(`[ ${FLAG} ] - User created successfully with id: ${user?.id}`);
 
     return res.status(StatusCodes.CREATED).json({
       success: true,
       message: "User created successfully",
       data: {
-        id: user[0]?.id,
+        id: user?.id,
       },
     });
   } catch (error: any) {
