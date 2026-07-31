@@ -1,13 +1,18 @@
-import { pgTable, uuid, varchar } from "drizzle-orm/pg-core";
-import { timestamps } from "../timestamps.helper";
+import { index, pgTable, uuid } from "drizzle-orm/pg-core";
+import { timestamps, names, credentials } from "../columns.helper";
 
-export const users = pgTable("users", {
+export const users = pgTable(
+  "users",
+  {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
-    firstName: varchar("first_name", { length: 255 }).notNull(),
-    surname: varchar("surname", { length: 255 }).notNull(),
-    idNumber: varchar("id_number", { length: 255 }).notNull(),
-    phoneNumber: varchar("phone_number", { length: 255 }).notNull(),
-    email: varchar("email", { length: 255 }).notNull(),
-    password: varchar("password", { length: 255 }).notNull(),
+    ...names,
+    ...credentials,
     ...timestamps,
-})
+  },
+  (table) => {
+    return {
+      userIdIndex: index("user_id_index").on(table.id),
+      userEmailIndex: index("user_email_index").on(table.email),
+    };
+  },
+);
