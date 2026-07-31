@@ -9,6 +9,7 @@ import { config } from "../src/config/envConfig";
 import logger from "../src/services/logger";
 import { connectDB } from "./config/db";
 import { errorHandlerMiddleware } from "./controllers/error.controller";
+import authRoutes from "./routes/auth.routes";
 
 const app = express();
 const port = config.PORT;
@@ -31,6 +32,9 @@ app.use(
     optionsSuccessStatus: 200,
   }),
 );
+
+//routes
+app.use("/api/v1/auth", authRoutes);
 
 io.on("connection", (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
