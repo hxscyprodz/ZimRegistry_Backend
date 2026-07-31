@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import express from "express";
 import { Server, Socket } from "socket.io";
+import { notFoundMiddleware } from "./middleware/not-found";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -33,6 +34,8 @@ app.use(
 io.on("connection", (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
 });
+
+app.use(notFoundMiddleware);
 
 export const startServer = async () => {
   try {
