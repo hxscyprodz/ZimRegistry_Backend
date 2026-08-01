@@ -1,10 +1,18 @@
 import { TBirthApplication } from "../types";
-import crypto from "node:crypto";
+import { redisClient } from "../services/redis";
+import logger from "../services/logger";
 
-export const generateTrackId = (applicationType: TBirthApplication) => {
+export const generateTrackId = async(applicationType: TBirthApplication) => {
   const year = new Date().getFullYear();
-  const min = 10000000;
-  const max = 99999999;
-  const random = crypto.randomInt(min, max + 1);
-  return `${applicationType}-${year}${random}`;
+  const redisKey = `${applicationType}_counter:${year}`;
+  try {
+    const nextSequence = await redisClient.incr(redisKey);
+    const paddedSequence = String(nextSequence).padStart(8, "0");
+    return `${applicationType}-${year}-${paddedSequence}`;
+  } catch (error: any) {
+    logger.error(
+      `An error occurred while generating [ ${applicationType}] track id`,
+    );
+    throw new Error(`Could not generate [ ${applicationType}] track id`);
+  }
 };
