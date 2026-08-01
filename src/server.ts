@@ -6,6 +6,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import { config } from "../src/config/envConfig";
+import { connectRedis, redisClient } from "./services/redis";
 import logger from "../src/services/logger";
 import { connectDB } from "./config/db";
 import { errorHandlerMiddleware } from "./controllers/error.controller";
@@ -45,6 +46,7 @@ app.use(notFoundMiddleware);
 
 export const startServer = async () => {
   try {
+    await connectRedis();
     await connectDB();
     server.listen(port, () => {
       logger.info(`Server is running on port ${port}`);

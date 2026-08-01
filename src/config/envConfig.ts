@@ -4,7 +4,12 @@ import logger from "../services/logger";
 
 dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
-const mandatoryEnvironmentVariables = ["PORT", "APP_ENV", "POSTGRESQL_URL"];
+const mandatoryEnvironmentVariables = [
+  "PORT",
+  "APP_ENV",
+  "POSTGRESQL_URL",
+  "REDIS_URL",
+];
 
 const missingEnvironmentVariables = mandatoryEnvironmentVariables.filter(
   (variable) => !process.env[variable],
@@ -25,4 +30,5 @@ export const config = {
   PORT: Number(process.env.PORT) || 3000,
   APP_ENV: process.env.APP_ENV as string,
   POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
+  REDIS_URL: process.env.REDIS_URL as string,
 };
