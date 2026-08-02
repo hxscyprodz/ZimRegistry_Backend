@@ -11,6 +11,7 @@ import logger from "../src/services/logger";
 import { connectDB } from "./config/db";
 import { errorHandlerMiddleware } from "./controllers/error.controller";
 import authRoutes from "./routes/auth.routes";
+import nationalIdApplicationsRoutes from "./routes/applications/nationalApp.routes";
 
 const app = express();
 const port = config.PORT;
@@ -36,6 +37,7 @@ app.use(
 
 //routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/id-applications", nationalIdApplicationsRoutes);
 
 io.on("connection", (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);

@@ -15,3 +15,9 @@ export const registerSchema = z.object({
   password: z.string().min(8).max(12),
   confirmPassword: z.string().min(8).max(12),
 });
+
+export const nationalIdApplicationSchema = z.object({
+  stationId: z.uuid(),
+  nationalIdNumber: z.string().min(15).max(15),
+  contactNumber: z.e164(),
+})
