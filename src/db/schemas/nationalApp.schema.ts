@@ -5,6 +5,7 @@ export const nationalIdApplications = pgTable(
   "national_id_applications",
   {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
+    userId: uuid("user_id").notNull(),
     contactNumber: varchar("contact_number", { length: 13 }).notNull(),
     nationalIdNumber: varchar("national_id_number", { length: 13 }).notNull(),
     ...applications,
