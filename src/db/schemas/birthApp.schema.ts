@@ -19,6 +19,6 @@ export const birthApplications = pgTable("birth_applications",{
 }, table => {
     return {
         birthCIdIndex: index("birthC_id_index").on(table.id),
-        applicationIdIndex: index("application_id_index").on(table.applicationId),
+        applicationIdIndex: index("application_track_id_index").on(table.trackingId),
     }
 })
