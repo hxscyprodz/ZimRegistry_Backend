@@ -21,3 +21,7 @@ export const nationalIdApplicationSchema = z.object({
   nationalIdNumber: z.string().min(15).max(15),
   contactNumber: z.e164(),
 })
+
+export const authenticationHeaderSchema = z.object({
+  authorization: z.string().startsWith("Bearer "),
+})
