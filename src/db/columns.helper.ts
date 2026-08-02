@@ -38,7 +38,7 @@ export const issueAdnRegistration = {
 };
 
 export const applications = {
-  applicationId: varchar("application_id", { length: 15 }).notNull().unique(),
+  trackingId: varchar("tracking_id", { length: 15 }).notNull().unique(),
   stationId: varchar("station_id", { length: 100 }).notNull(),
   status: status("status").default("pending").notNull(),
   approvedBy: varchar("approved_by", { length: 100 }),
