@@ -38,8 +38,8 @@ export const authenticationMiddleware = async (
       });
     }
 
-    return (req.user = payload);
-    next();
+    req.user = payload;
+    return next();
   } catch (error: any) {
     logger.error(
       `[ ${FLAG} ] - An error occurred while authenticating user: ${error.message}`,
