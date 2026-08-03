@@ -7,7 +7,7 @@ export const generateTrackId = async(applicationType: TBirthApplication) => {
   const redisKey = `${applicationType}_counter:${year}`;
   try {
     const nextSequence = await redisClient.incr(redisKey);
-    const paddedSequence = String(nextSequence).padStart(8, "0");
+    const paddedSequence = String(nextSequence).padStart(7, "0");
     return `${applicationType}-${year}-${paddedSequence}`;
   } catch (error: any) {
     logger.error(
