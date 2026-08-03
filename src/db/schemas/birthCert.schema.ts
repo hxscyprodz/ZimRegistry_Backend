@@ -5,7 +5,7 @@ export const birthCertificates = pgTable(
   "birth_certificates",
   {
     id: uuid("id").primaryKey().defaultRandom().notNull(),
-    nationalIdNumber: varchar("national_id_number", { length: 13 })
+    nationalIdNumber: varchar("national_id_number", { length: 15 })
       .notNull()
       .unique(),
     ...names,
