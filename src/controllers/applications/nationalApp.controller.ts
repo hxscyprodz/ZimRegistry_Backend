@@ -6,8 +6,9 @@ import logger from "../../services/logger";
 import { StatusCodes } from "http-status-codes";
 import { birthCertificates, nationalIdApplications } from "../../db/schemas";
 import { generateTrackId } from "../../utils/trackId";
+import { AuthRequest } from "../../types";
 
-export const createApplication = async (req: Request, res: Response) => {
+export const createApplication = async (req: AuthRequest, res: Response) => {
   const FLAG = "ID_APPLICATION";
   const isRequestValid = nationalIdApplicationSchema.safeParse(req.body);
   if (!isRequestValid.success) {
@@ -36,11 +37,13 @@ export const createApplication = async (req: Request, res: Response) => {
       });
     }
 
+    
     const trackingId = await generateTrackId("ID");
+
     const application = await db
       .insert(nationalIdApplications)
       .values({
-        userId,
+        userId: req.user?.userId!,
         stationId,
         contactNumber,
         nationalIdNumber,
@@ -61,6 +64,7 @@ export const createApplication = async (req: Request, res: Response) => {
       data: application,
     });
   } catch (error: any) {
+    console.log(error);
     logger.error(
       `[ ${FLAG}] - An error occurred while creating application: ${error.message}`,
     );

@@ -3,10 +3,12 @@ import { StatusCodes } from "http-status-codes";
 import { loginSchema, registerSchema } from "../validators/validators";
 import { hashPassword, comparePassword } from "../services/bcrypt";
 import { users } from "../db/schemas";
+import { birthCertificates } from "../db/schemas";
 import { db } from "../config/db";
 import CustomError from "../utils/CustomError";
 import logger from "../services/logger";
 import { eq } from "drizzle-orm";
+import { generateAccessToken } from "../services/jsonwebtokens";
 
 export const login = async (req: Request, res: Response) => {
   const FLAG = "USER_LOGIN";
@@ -51,6 +53,11 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
+    const token = generateAccessToken({
+      userId: user[0]?.id!,
+      role: user[0]?.role!,
+    });
+
     logger.info(
       `[ ${FLAG} ] - Login attempt for user : ${user[0]?.id} successful`,
     );
@@ -62,6 +69,7 @@ export const login = async (req: Request, res: Response) => {
         id: user[0]?.id,
         email: user[0]?.email,
       },
+      token,
     });
   } catch (error: any) {
     logger.error(
@@ -82,7 +90,22 @@ export const register = async (req: Request, res: Response) => {
     });
   }
   try {
-    const { email, password, confirmPassword } = isRequestValid.data;
+    const { email, password, confirmPassword, nationalIdNumber } =
+      isRequestValid.data;
+
+    const isNationalIdRegistered = await db
+      .select()
+      .from(birthCertificates)
+      .where(eq(birthCertificates.nationalIdNumber, nationalIdNumber))
+      .limit(1);
+
+    if (isNationalIdRegistered.length <= 0) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        success: false,
+        message: "National ID Number not registered",
+        data: null,
+      });
+    }
 
     if (password !== confirmPassword) {
       return res.status(StatusCodes.BAD_REQUEST).json({
@@ -111,6 +134,12 @@ export const register = async (req: Request, res: Response) => {
 
     const user = await db.insert(users).values(isRequestValid.data).returning({
       id: users.id,
+      role: users.role,
+    });
+
+    const token = generateAccessToken({
+      userId: user[0]?.id!,
+      role: user[0]?.role!,
     });
 
     logger.info(
@@ -123,6 +152,7 @@ export const register = async (req: Request, res: Response) => {
       data: {
         id: user[0]?.id,
       },
+      token,
     });
   } catch (error: any) {
     logger.error(

@@ -12,6 +12,7 @@ import { connectDB } from "./config/db";
 import { errorHandlerMiddleware } from "./controllers/error.controller";
 import authRoutes from "./routes/auth.routes";
 import nationalIdApplicationsRoutes from "./routes/applications/nationalApp.routes";
+import { authenticationMiddleware } from "./middleware/authentication";
 
 const app = express();
 const port = config.PORT;
@@ -37,7 +38,11 @@ app.use(
 
 //routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/id-applications", nationalIdApplicationsRoutes);
+app.use(
+  "/api/v1/id-applications",
+  authenticationMiddleware,
+  nationalIdApplicationsRoutes,
+);
 
 io.on("connection", (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
