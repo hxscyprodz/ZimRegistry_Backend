@@ -12,6 +12,7 @@ import { connectDB } from "./config/db";
 import { errorHandlerMiddleware } from "./controllers/error.controller";
 import authRoutes from "./routes/auth.routes";
 import nationalIdApplicationsRoutes from "./routes/applications/nationalApp.routes";
+import locationRoutes from "./routes/locations.routes";
 import { authenticationMiddleware } from "./middleware/authentication";
 
 const app = express();
@@ -43,6 +44,7 @@ app.use(
   authenticationMiddleware,
   nationalIdApplicationsRoutes,
 );
+app.use("/api/v1/locations", locationRoutes);
 
 io.on("connection", (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
