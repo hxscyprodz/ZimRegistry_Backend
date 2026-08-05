@@ -9,7 +9,8 @@ const mandatoryEnvironmentVariables = [
   "APP_ENV",
   "POSTGRESQL_URL",
   "REDIS_URL",
-  "ACCESS_TOKEN_SECRET"
+  "ACCESS_TOKEN_SECRET",
+  "ALLOWED_ORIGINS"
 ];
 
 const missingEnvironmentVariables = mandatoryEnvironmentVariables.filter(
@@ -33,4 +34,5 @@ export const config = {
   POSTGRESQL_URL: process.env.POSTGRESQL_URL as string,
   REDIS_URL: process.env.REDIS_URL as string,
   ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET as string,
+  ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS as string,
 };

@@ -30,7 +30,7 @@ app.use(
 );
 app.use(
   cors({
-    origin: "*",
+    origin: config.ALLOWED_ORIGINS,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
     optionsSuccessStatus: 200,
