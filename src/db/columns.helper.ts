@@ -41,6 +41,7 @@ export const applications = {
   trackingId: varchar("tracking_id", { length: 15 }).notNull().unique(),
   stationId: varchar("station_id", { length: 100 }).notNull(),
   status: status("status").default("pending").notNull(),
+  isPrinted: boolean("is_printed").default(false).notNull(),
   approvedBy: varchar("approved_by", { length: 100 }),
   approvedAt: timestamp("approved_at"),
   rejectedBy: varchar("rejected_by", { length: 100 }),
