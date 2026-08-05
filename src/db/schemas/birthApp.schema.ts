@@ -3,7 +3,7 @@ import { names, applications, timestamps, details } from "../columns.helper";
 import { users } from "./user.schema";
 
 export const birthApplications = pgTable("birth_applications",{
-    id: uuid("id").primaryKey(),
+    id: uuid("id").primaryKey().defaultRandom().notNull(),
     userId: uuid("user_id").notNull().references(() => users.id),
     ...names,
     ...details,
@@ -18,7 +18,6 @@ export const birthApplications = pgTable("birth_applications",{
     ...timestamps,
 }, table => {
     return {
-        birthCIdIndex: index("birthC_id_index").on(table.id),
         applicationIdIndex: index("application_track_id_index").on(table.trackingId),
     }
 })
