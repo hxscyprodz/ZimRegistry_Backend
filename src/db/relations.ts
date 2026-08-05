@@ -1,5 +1,11 @@
 import { relations } from "drizzle-orm";
-import { users, birthApplications, nationalIdApplications } from "./schemas";
+import {
+  users,
+  birthApplications,
+  nationalIdApplications,
+  districts,
+  provinces,
+} from "./schemas";
 
 export const birthApplicationsRelations = relations(
   birthApplications,
@@ -25,3 +31,14 @@ export const nationalIdApplicationsRelations = relations(
     }),
   }),
 );
+
+export const districtsRelations = relations(districts, ({ one }) => ({
+  province: one(provinces, {
+    fields: [districts.name],
+    references: [provinces.id],
+  }),
+}));
+
+export const provincesRelations = relations(provinces, ({ many }) => ({
+  districts: many(districts),
+}));
