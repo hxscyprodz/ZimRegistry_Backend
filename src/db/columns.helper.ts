@@ -1,4 +1,4 @@
-import { timestamp, varchar, pgEnum, date, boolean } from "drizzle-orm/pg-core";
+import { timestamp, varchar, pgEnum, date, boolean, uuid } from "drizzle-orm/pg-core";
 
 export const sex = pgEnum("sex", ["male", "female"]);
 export const status = pgEnum("status", ["pending", "approved", "rejected"]);
@@ -39,12 +39,12 @@ export const issueAdnRegistration = {
 
 export const applications = {
   trackingId: varchar("tracking_id", { length: 15 }).notNull(),
-  stationId: varchar("station_id", { length: 100 }).notNull(),
+  stationId: uuid("station_id").notNull(),
   status: status("status").default("pending").notNull(),
   isPrinted: boolean("is_printed").default(false).notNull(),
-  approvedBy: varchar("approved_by", { length: 100 }),
+  approvedBy: uuid("approved_by"),
   approvedAt: timestamp("approved_at"),
-  rejectedBy: varchar("rejected_by", { length: 100 }),
+  rejectedBy: uuid("rejected_by"),
   rejectedAt: timestamp("rejected_at"),
   rejectionReason: varchar("rejection_reason", { length: 500 }),
 };

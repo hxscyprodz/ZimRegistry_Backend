@@ -5,6 +5,7 @@ import {
   nationalIdApplications,
   districts,
   provinces,
+  staffMember,
 } from "./schemas";
 
 export const birthApplicationsRelations = relations(
@@ -13,6 +14,14 @@ export const birthApplicationsRelations = relations(
     user: one(users, {
       fields: [birthApplications.userId],
       references: [users.id],
+    }),
+    approved: one(staffMember, {
+      fields: [birthApplications.approvedBy],
+      references: [staffMember.staffId],
+    }),
+    rejected: one(staffMember, {
+      fields: [birthApplications.rejectedBy],
+      references: [staffMember.staffId],
     }),
   }),
 );
@@ -29,6 +38,14 @@ export const nationalIdApplicationsRelations = relations(
       fields: [nationalIdApplications.userId],
       references: [users.id],
     }),
+    approved: one(staffMember, {
+      fields: [nationalIdApplications.approvedBy],
+      references: [staffMember.staffId],
+    }),
+    rejected: one(staffMember, {
+      fields: [nationalIdApplications.rejectedBy],
+      references: [staffMember.staffId],
+    }),
   }),
 );
 
@@ -42,3 +59,12 @@ export const districtsRelations = relations(districts, ({ one }) => ({
 export const provincesRelations = relations(provinces, ({ many }) => ({
   districts: many(districts),
 }));
+
+export const staffMemberRelations = relations(staffMember, ({ one }) => {
+  return {
+    station: one(districts, {
+      fields: [staffMember.stationId],
+      references: [districts.id],
+    }),
+  };
+});
