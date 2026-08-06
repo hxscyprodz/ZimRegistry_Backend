@@ -4,7 +4,11 @@ import { eq } from "drizzle-orm";
 import { nationalIdApplicationSchema } from "../../validators/validators";
 import logger from "../../services/logger";
 import { StatusCodes } from "http-status-codes";
-import { birthCertificates, nationalIdApplications } from "../../db/schemas";
+import {
+  birthCertificates,
+  nationalIdApplications,
+  districts,
+} from "../../db/schemas";
 import { generateTrackId } from "../../utils/trackId";
 import { AuthRequest } from "../../types";
 
@@ -22,6 +26,21 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
   try {
     const { nationalIdNumber, contactNumber, stationId } = isRequestValid.data;
 
+    const isStationAvailable = await db
+      .select({
+        id: districts.id,
+      })
+      .from(districts)
+      .where(eq(districts.id, stationId))
+      .limit(1);
+    if (isStationAvailable.length <= 0) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        status: "false",
+        message: "Station not found",
+        data: null,
+      });
+    }
+
     const isBirthCertificateAvailable = await db
       .select({
         id: birthCertificates.id,
@@ -37,7 +56,6 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    
     const trackingId = await generateTrackId("ID");
 
     const application = await db
