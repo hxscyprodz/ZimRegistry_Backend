@@ -13,6 +13,7 @@ import { errorHandlerMiddleware } from "./controllers/error.controller";
 import authRoutes from "./routes/auth.routes";
 import nationalIdApplicationsRoutes from "./routes/applications/nationalApp.routes";
 import locationRoutes from "./routes/locations.routes";
+import trackApplicationRoutes from "./routes/applications/trackApp.routes";
 import { authenticationMiddleware } from "./middleware/authentication";
 
 const app = express();
@@ -45,6 +46,7 @@ app.use(
   nationalIdApplicationsRoutes,
 );
 app.use("/api/v1/locations", locationRoutes);
+app.use("/api/v1/applications/track", trackApplicationRoutes);
 
 io.on("connection", (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
