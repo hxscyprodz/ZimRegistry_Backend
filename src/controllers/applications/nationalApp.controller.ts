@@ -11,6 +11,7 @@ import {
 } from "../../db/schemas";
 import { generateTrackId } from "../../utils/trackId";
 import { AuthRequest } from "../../types";
+import { calculateAge } from "../../utils/calculateYears";
 
 export const createApplication = async (req: AuthRequest, res: Response) => {
   const FLAG = "ID_APPLICATION";
@@ -44,6 +45,7 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
     const isBirthCertificateAvailable = await db
       .select({
         id: birthCertificates.id,
+        dateOfBirth: birthCertificates.dateOfBirth,
       })
       .from(birthCertificates)
       .where(eq(birthCertificates.nationalIdNumber, nationalIdNumber))
@@ -52,6 +54,15 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
       return res.status(StatusCodes.NOT_FOUND).json({
         status: "false",
         message: "ID Number not found",
+        data: null,
+      });
+    }
+
+    const ageToday = calculateAge(isBirthCertificateAvailable[0]?.dateOfBirth!);
+    if (ageToday < 16) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "Not yet legible to apply for ID",
         data: null,
       });
     }
