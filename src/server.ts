@@ -12,6 +12,7 @@ import { connectDB } from "./config/db";
 import { errorHandlerMiddleware } from "./controllers/error.controller";
 import authRoutes from "./routes/auth.routes";
 import nationalIdApplicationsRoutes from "./routes/applications/nationalApp.routes";
+import birthApplicationsRoutes from "./routes/applications/birthApp.routes";
 import locationRoutes from "./routes/locations.routes";
 import trackApplicationRoutes from "./routes/applications/trackApp.routes";
 import { authenticationMiddleware } from "./middleware/authentication";
@@ -44,6 +45,11 @@ app.use(
   "/api/v1/id-applications",
   authenticationMiddleware,
   nationalIdApplicationsRoutes,
+);
+app.use(
+  "/api/v1/birth-applications",
+  authenticationMiddleware,
+  birthApplicationsRoutes,
 );
 app.use("/api/v1/locations", locationRoutes);
 app.use("/api/v1/applications/track", trackApplicationRoutes);
