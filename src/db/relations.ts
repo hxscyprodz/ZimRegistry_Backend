@@ -5,7 +5,9 @@ import {
   nationalIdApplications,
   districts,
   provinces,
+  birthCertificates,
   staffMember,
+  nationalIDs,
 } from "./schemas";
 
 export const birthApplicationsRelations = relations(
@@ -65,6 +67,15 @@ export const staffMemberRelations = relations(staffMember, ({ one }) => {
     station: one(districts, {
       fields: [staffMember.stationId],
       references: [districts.id],
+    }),
+  };
+});
+
+export const nationalIDsRelations = relations(nationalIDs, ({ one }) => {
+  return {
+    birthCertificate: one(birthCertificates, {
+      fields: [nationalIDs.nationalIdNumber],
+      references: [birthCertificates.nationalIdNumber],
     }),
   };
 });
