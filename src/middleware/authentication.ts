@@ -16,7 +16,7 @@ export const authenticationMiddleware = async (
     const isHeaderValid = authenticationHeaderSchema.safeParse(req.headers);
     if (!isHeaderValid.success) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
-        status: false,
+        success: false,
         message: "Token provided is invalid",
         data: null,
       });
@@ -45,7 +45,7 @@ export const authenticationMiddleware = async (
       `[ ${FLAG} ] - An error occurred while authenticating user: ${error.message}`,
     );
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      status: false,
+      success: false,
       message: "An error occurred while authenticating user",
       data: null,
     });

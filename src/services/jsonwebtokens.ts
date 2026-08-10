@@ -19,7 +19,7 @@ export const verifyAccessToken = (token: string): ITokenPayload | null => {
   try {
     return jwt.verify(token, config.ACCESS_TOKEN_SECRET) as ITokenPayload;
   } catch (error: any) {
-    logger.error(
+    logger.warn(
       `[${FLAG}] - An error occurred while verifying access token: ${error.message}`,
     );
     return null;

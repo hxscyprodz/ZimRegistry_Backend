@@ -53,7 +53,7 @@ export const nationalIdApplicationsRelations = relations(
 
 export const districtsRelations = relations(districts, ({ one }) => ({
   province: one(provinces, {
-    fields: [districts.name],
+    fields: [districts.provinceId],
     references: [provinces.id],
   }),
 }));

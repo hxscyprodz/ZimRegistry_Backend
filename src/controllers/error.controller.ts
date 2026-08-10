@@ -6,11 +6,12 @@ export const errorHandlerMiddleware = (
   res: Response,
   next: NextFunction,
 ) => {
-  const statusCode = res.statusCode ? res.statusCode : 500;
+  const statusCode = (err as any).statusCode || (res.statusCode !== 200 ? res.statusCode : 500);
   const response = {
-    status: "error",
+    success: false,
+    status: (err as any).status || "error",
     message: err.message,
-    stack: process.env.NODE_ENV === "production" ? null : err.stack,
+    stack: (process.env.APP_ENV === "production" || process.env.NODE_ENV === "production") ? null : err.stack,
   };
 
   res.status(statusCode).json(response);
