@@ -31,16 +31,7 @@ export const getProvinces = async (req: Request, res: Response) => {
 export const getDistricts = async (req: Request, res: Response) => {
   try {
     const { provinceId } = req.query;
-    const query = await db
-      .select({
-        id: districts.id,
-        name: districts.name,
-        code: districts.code,
-        provinceId: districts.provinceId,
-      })
-      .from(districts);
-
-    const result = typeof provinceId == "string"
+    const result = typeof provinceId === "string"
       ? await db
           .select({
             id: districts.id,
@@ -50,7 +41,14 @@ export const getDistricts = async (req: Request, res: Response) => {
           })
           .from(districts)
           .where(eq(districts.provinceId, provinceId))
-      : query;
+      : await db
+          .select({
+            id: districts.id,
+            name: districts.name,
+            code: districts.code,
+            provinceId: districts.provinceId,
+          })
+          .from(districts);
 
     return res.status(StatusCodes.OK).json({
       success: true,

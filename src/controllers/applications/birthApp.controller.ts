@@ -14,7 +14,7 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
     const isRequestValid = birthApplicationSchema.safeParse(req.body);
     if (!isRequestValid.success) {
       return res.status(StatusCodes.BAD_REQUEST).json({
-        status: false,
+        success: false,
         message: "Credentials provided are invalid",
         data: null,
       });
@@ -39,7 +39,7 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
 
     if (isBirthCertificateAvailable.length < parentIds.length) {
       return res.status(StatusCodes.BAD_REQUEST).json({
-        status: false,
+        success: false,
         message:
           "One or two of the parent ID Number not found in the birth records",
         data: null,
@@ -65,7 +65,7 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
     );
 
     return res.status(StatusCodes.CREATED).json({
-      status: true,
+      success: true,
       message: "Application created successfully",
       data: result,
     });
@@ -74,7 +74,7 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
       `[${FLAG}] An error occurred while creating application: ${error.message}`,
     );
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      status: "false",
+      success: false,
       message: "An error occurred while creating application",
       data: null,
     });

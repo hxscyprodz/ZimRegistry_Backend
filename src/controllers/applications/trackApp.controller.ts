@@ -8,17 +8,18 @@ import logger from "../../services/logger";
 export const trackApplication = async (req: Request, res: Response) => {
   try {
     const { trackingId } = req.params;
-    const applicationType = trackingId?.toString().startsWith("BC")
-      ? "birth"
-      : "id";
 
     if (!trackingId || typeof trackingId !== "string") {
       return res.status(StatusCodes.BAD_REQUEST).json({
-        status: false,
+        success: false,
         message: "Invalid tracking ID provided",
         data: null,
       });
     }
+
+    const applicationType = trackingId.startsWith("BC")
+      ? "birth"
+      : "id";
 
     const targetTable =
       applicationType === "birth" ? birthApplications : nationalIdApplications;
@@ -35,14 +36,14 @@ export const trackApplication = async (req: Request, res: Response) => {
 
     if (!application) {
       return res.status(StatusCodes.NOT_FOUND).json({
-        status: false,
+        success: false,
         message: `Application with tracking ID ${trackingId} not found`,
         data: null,
       });
     }
 
     return res.status(StatusCodes.OK).json({
-      status: true,
+      success: true,
       message: "Application fetched successfully",
       data: application,
     });
@@ -50,8 +51,8 @@ export const trackApplication = async (req: Request, res: Response) => {
     logger.error(
       `An error occurred while fetching application: ${error.message}`,
     );
-    return res.status(500).json({
-      status: false,
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
       message: "An error occurred while fetching application",
       data: null,
     });

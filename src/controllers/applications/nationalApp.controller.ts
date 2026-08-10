@@ -18,7 +18,7 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
   const isRequestValid = nationalIdApplicationSchema.safeParse(req.body);
   if (!isRequestValid.success) {
     return res.status(StatusCodes.BAD_REQUEST).json({
-      status: "false",
+      success: false,
       message: "Credentials provided are invalid",
       data: null,
     });
@@ -36,7 +36,7 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
       .limit(1);
     if (isStationAvailable.length <= 0) {
       return res.status(StatusCodes.NOT_FOUND).json({
-        status: "false",
+        success: false,
         message: "Station not found",
         data: null,
       });
@@ -52,7 +52,7 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
       .limit(1);
     if (isBirthCertificateAvailable.length <= 0) {
       return res.status(StatusCodes.NOT_FOUND).json({
-        status: "false",
+        success: false,
         message: "ID Number not found",
         data: null,
       });
@@ -88,7 +88,7 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
       `[ ${FLAG}] - Application with tracking id ${trackingId} created successfully for Birth ${nationalIdNumber}`,
     );
     return res.status(StatusCodes.CREATED).json({
-      status: "true",
+      success: true,
       message: "Application created successfully",
       data: application,
     });
@@ -98,7 +98,7 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
       `[ ${FLAG}] - An error occurred while creating application: ${error.message}`,
     );
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      status: "false",
+      success: false,
       message: "An error occurred while creating application",
       data: null,
     });
