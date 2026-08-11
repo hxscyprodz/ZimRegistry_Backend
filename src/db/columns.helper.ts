@@ -1,7 +1,32 @@
-import { timestamp, varchar, pgEnum, date, boolean, uuid } from "drizzle-orm/pg-core";
+import {
+  timestamp,
+  varchar,
+  pgEnum,
+  date,
+  boolean,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 export const sex = pgEnum("sex", ["male", "female"]);
-export const status = pgEnum("status", ["pending", "approved", "rejected"]);
+
+export const applicationStatus = pgEnum("application_status", [
+  "PENDING",
+  "APPROVED",
+  "REJECTED",
+]);
+
+export const roles = pgEnum("roles", [
+  "SUPER_ADMIN",
+  "STATION_ADMIN",
+  "REGISTRAR_OFFICER",
+  "USER",
+]);
+
+export const userStatus = pgEnum("user_status", [
+  "ACTIVE",
+  "SUSPENDED",
+  "DELETED",
+]);
 
 export const timestamps = {
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -20,6 +45,8 @@ export const credentials = {
   email: varchar("email", { length: 255 }).notNull(),
   password: varchar("password", { length: 255 }).notNull(),
   isEmailVerified: boolean("is_email_verified").default(false).notNull(),
+  role: roles("role").notNull().default("USER"),
+  status: userStatus("status").notNull().default("ACTIVE"),
 };
 
 export const details = {
@@ -40,7 +67,7 @@ export const issueAdnRegistration = {
 export const applications = {
   trackingId: varchar("tracking_id", { length: 15 }).notNull(),
   stationId: uuid("station_id").notNull(),
-  status: status("status").default("pending").notNull(),
+  status: applicationStatus("status").default("PENDING").notNull(),
   isPrinted: boolean("is_printed").default(false).notNull(),
   approvedBy: uuid("approved_by"),
   approvedAt: timestamp("approved_at"),
