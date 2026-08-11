@@ -68,6 +68,10 @@ export const staffMemberRelations = relations(staffMember, ({ one }) => {
       fields: [staffMember.stationId],
       references: [districts.id],
     }),
+    user: one(users, {
+      fields: [staffMember.nationalIdNumber],
+      references: [users.nationalIdNumber],
+    }),
   };
 });
 

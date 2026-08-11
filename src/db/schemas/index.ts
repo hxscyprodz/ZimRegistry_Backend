@@ -7,4 +7,4 @@ export * from "./province.schema";
 export * from "./staff.schema";
 export * from "./nationalID.schema";
 export * from "../relations";
-export { sex, status } from "../columns.helper";
+export { sex, userStatus, applicationStatus, roles } from "../columns.helper";
