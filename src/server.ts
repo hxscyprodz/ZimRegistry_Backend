@@ -6,7 +6,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import { config } from "../src/config/envConfig";
-import { connectRedis, redisClient } from "./services/redis";
+import { connectRedis } from "./services/redis";
 import logger from "../src/services/logger";
 import { connectDB } from "./config/db";
 import { errorHandlerMiddleware } from "./controllers/error.controller";
@@ -21,10 +21,13 @@ const app = express();
 const port = config.PORT;
 const server = createServer(app);
 const io = new Server(server);
+const allowedOrigins = (config.ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan("combined"));
+app.use(morgan(config.APP_ENV === "production" ? "combined" : "dev"));
 app.use(
   helmet({
     crossOriginResourcePolicy: false,
@@ -32,7 +35,13 @@ app.use(
 );
 app.use(
   cors({
-    origin: config.ALLOWED_ORIGINS,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(null, false);
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
     optionsSuccessStatus: 200,
