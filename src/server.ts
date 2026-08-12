@@ -15,6 +15,7 @@ import nationalIdApplicationsRoutes from "./routes/applications/nationalApp.rout
 import birthApplicationsRoutes from "./routes/applications/birthApp.routes";
 import locationRoutes from "./routes/locations.routes";
 import trackApplicationRoutes from "./routes/applications/app-services.routes";
+import staffMemberRoutes from "./routes/dashboard/staff.routes";
 import { authenticationMiddleware } from "./middleware/authentication";
 
 const app = express();
@@ -62,6 +63,7 @@ app.use(
 );
 app.use("/api/v1/locations", locationRoutes);
 app.use("/api/v1/applications", trackApplicationRoutes);
+app.use("/api/v1/staff", authenticationMiddleware, staffMemberRoutes);
 
 io.on("connection", (socket: Socket) => {
   console.log(`User connected: ${socket.id}`);
