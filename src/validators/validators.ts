@@ -43,3 +43,10 @@ export const birthApplicationSchema = z.object({
   motherIdUri: z.url(),
   fatherIdUri: z.url().optional(),
 });
+
+export const updateStaffMemberSchema = z.object({
+  phoneNumber: z.e164().optional(),
+  email: z.string().email().optional(),
+  password: z.string().min(8).max(12).optional(),
+  confirmPassword: z.string().min(8).max(12).optional(),
+});
