@@ -69,6 +69,7 @@ export const applications = {
   stationId: uuid("station_id").notNull(),
   status: applicationStatus("status").default("PENDING").notNull(),
   isPrinted: boolean("is_printed").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   approvedBy: uuid("approved_by"),
   approvedAt: timestamp("approved_at"),
   rejectedBy: uuid("rejected_by"),
