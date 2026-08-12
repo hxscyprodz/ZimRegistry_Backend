@@ -5,9 +5,8 @@ import { hashPassword, comparePassword } from "../services/bcrypt";
 import { staffMember, users } from "../db/schemas";
 import { birthCertificates } from "../db/schemas";
 import { db } from "../config/db";
-import CustomError from "../utils/CustomError";
 import logger from "../services/logger";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { generateAccessToken } from "../services/jsonwebtokens";
 import { AuthRequest } from "../types";
 
@@ -209,7 +208,13 @@ export const register = async (req: Request, res: Response) => {
     const [userExists] = await db
       .select()
       .from(users)
-      .where(eq(users.email, email))
+      .where(
+        or(
+          eq(users.email, email),
+          eq(users.nationalIdNumber, nationalIdNumber),
+          eq(users.phoneNumber, userData.phoneNumber),
+        ),
+      )
       .limit(1);
 
     if (userExists) {
