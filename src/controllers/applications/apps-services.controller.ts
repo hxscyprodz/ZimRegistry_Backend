@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { nationalIdApplications, birthApplications } from "../../db/schemas";
 import { StatusCodes } from "http-status-codes";
 import logger from "../../services/logger";
+import { unionAll } from "drizzle-orm/pg-core";
 
 export const trackApplication = async (req: Request, res: Response) => {
   try {
@@ -100,6 +101,20 @@ export const getApplications = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    const applications = [
+      ...userApplications.birthApplications.map((app) => ({
+        ...app,
+        type: "BIRTH",
+      })),
+      ...userApplications.nationalIdApplications.map((app) => ({
+        ...app,
+        type: "NATIONAL_ID",
+      })),
+    ].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+
     const stats = [
       ...userApplications.birthApplications,
       ...userApplications.nationalIdApplications,
@@ -129,8 +144,7 @@ export const getApplications = async (req: AuthRequest, res: Response) => {
       success: true,
       message: "Applications fetched successfully",
       data: {
-        birthApplications: userApplications.birthApplications ?? [],
-        nationalIdApplications: userApplications.nationalIdApplications ?? [],
+        applications,
         stats,
       },
     });
