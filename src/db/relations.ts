@@ -8,6 +8,7 @@ import {
   birthCertificates,
   staffMember,
   nationalIDs,
+  stations,
 } from "./schemas";
 
 export const birthApplicationsRelations = relations(
@@ -24,6 +25,10 @@ export const birthApplicationsRelations = relations(
     rejected: one(staffMember, {
       fields: [birthApplications.rejectedBy],
       references: [staffMember.staffId],
+    }),
+    station: one(stations, {
+      fields: [birthApplications.stationId],
+      references: [stations.id],
     }),
   }),
 );
@@ -48,14 +53,19 @@ export const nationalIdApplicationsRelations = relations(
       fields: [nationalIdApplications.rejectedBy],
       references: [staffMember.staffId],
     }),
+    station: one(stations, {
+      fields: [nationalIdApplications.stationId],
+      references: [stations.id],
+    }),
   }),
 );
 
-export const districtsRelations = relations(districts, ({ one }) => ({
+export const districtsRelations = relations(districts, ({ one, many }) => ({
   province: one(provinces, {
     fields: [districts.provinceId],
     references: [provinces.id],
   }),
+  stations: many(districts),
 }));
 
 export const provincesRelations = relations(provinces, ({ many }) => ({
@@ -64,9 +74,9 @@ export const provincesRelations = relations(provinces, ({ many }) => ({
 
 export const staffMemberRelations = relations(staffMember, ({ one }) => {
   return {
-    station: one(districts, {
+    station: one(stations, {
       fields: [staffMember.stationId],
-      references: [districts.id],
+      references: [stations.id],
     }),
     user: one(users, {
       fields: [staffMember.nationalIdNumber],
@@ -83,3 +93,13 @@ export const nationalIDsRelations = relations(nationalIDs, ({ one }) => {
     }),
   };
 });
+
+export const stationsRelations = relations(stations, ({ one, many }) => ({
+  province: one(districts, {
+    fields: [stations.districtId],
+    references: [districts.id],
+  }),
+  staffMembers: many(staffMember),
+  birthApplications: many(birthApplications),
+  nationalIdApplications: many(nationalIdApplications),
+}));

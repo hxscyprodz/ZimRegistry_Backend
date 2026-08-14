@@ -6,5 +6,6 @@ export * from "./district.schema";
 export * from "./province.schema";
 export * from "./staff.schema";
 export * from "./nationalID.schema";
+export * from "./station.schema";
 export * from "../relations";
 export { sex, userStatus, applicationStatus, roles } from "../columns.helper";
