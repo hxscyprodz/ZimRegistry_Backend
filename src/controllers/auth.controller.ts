@@ -82,7 +82,7 @@ export const login = async (req: Request, res: Response) => {
     return res.status(StatusCodes.OK).json({
       success: true,
       message: "Login successful",
-      data: {
+      user: {
         id: user?.users.id,
         email: user?.users.email,
         name: `${user?.users.firstName} ${user?.users.surname}`,
@@ -120,6 +120,7 @@ export const profile = async (req: AuthRequest, res: Response) => {
     const [user] = await db
       .select({
         user: {
+          id: users.id,
           role: users.role,
           firstName: users.firstName,
           surname: users.surname,
@@ -148,7 +149,8 @@ export const profile = async (req: AuthRequest, res: Response) => {
     return res.status(StatusCodes.OK).json({
       success: true,
       message: "Profile fetched successfully",
-      data: {
+      user: {
+        id: user.user.id,
         employeeNumber: user.staffMember?.staffId,
         stationId: user.staffMember?.stationId,
         role: user.user.role,
