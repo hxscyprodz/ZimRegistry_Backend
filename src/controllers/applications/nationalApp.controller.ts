@@ -8,6 +8,7 @@ import {
   birthCertificates,
   nationalIdApplications,
   districts,
+  users,
 } from "../../db/schemas";
 import { generateTrackId } from "../../utils/trackId";
 import { AuthRequest } from "../../types";
@@ -103,4 +104,56 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
       data: null,
     });
   }
+};
+
+export const getApplications = async (req: AuthRequest, res: Response) => {
+  const FLAG = "GET_ID_APPLICATIONS";
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        success: false,
+        message: "Unauthorized",
+        data: null,
+      });
+    }
+    const applications = await db
+      .select({
+        firstName: users.firstName,
+        surname: users.surname,
+        nationalIdNumber: nationalIdApplications.nationalIdNumber,
+        contactNumber: nationalIdApplications.contactNumber,
+        stationId: nationalIdApplications.stationId,
+        status: nationalIdApplications.status,
+        trackingId: nationalIdApplications.trackingId,
+        createdAt: nationalIdApplications.createdAt,
+        approvedBy: nationalIdApplications.approvedBy,
+        rejectedBy: nationalIdApplications.rejectedBy,
+        isPrinted: nationalIdApplications.isPrinted,
+      })
+      .from(nationalIdApplications)
+      .leftJoin(users, eq(users.id, nationalIdApplications.userId));
+    if (applications.length <= 0) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "No applications found",
+        data: null,
+      });
+    }
+
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Applications fetched successfully",
+      data: applications,
+    });
+  } catch (error: any) {
+    logger.error(
+      `[${FLAG}] - An error occurred while fetching applications: ${error.message}`,
+    );
+  }
+  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    success: false,
+    message: "An error occurred while fetching applications",
+    data: null,
+  });
 };

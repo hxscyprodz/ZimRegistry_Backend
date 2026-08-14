@@ -80,3 +80,41 @@ export const createApplication = async (req: AuthRequest, res: Response) => {
     });
   }
 };
+
+export const getApplications = async (req: AuthRequest, res: Response) => {
+  const FLAG = "GET_BIRTH_APPLICATIONS";
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        success: false,
+        message: "Unauthorized",
+        data: null,
+      });
+    }
+    const applications = await db.select().from(birthApplications);
+    if (applications.length <= 0) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "No applications found",
+        data: null,
+      });
+    }
+
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Applications fetched successfully",
+      data: applications,
+      count: applications.length,
+    });
+  } catch (error: any) {
+    logger.error(
+      `[${FLAG}] An error occurred while fetching applications: ${error.message}`,
+    );
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "An error occurred while fetching applications",
+      data: null,
+    });
+  }
+};
