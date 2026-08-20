@@ -4,9 +4,10 @@ import { AuthRequest } from "../../types";
 import { birthApplicationSchema } from "../../validators/validators";
 import { db } from "../../config/db";
 import { birthApplications, birthCertificates } from "../../db/schemas";
-import { inArray } from "drizzle-orm";
+import { inArray, eq } from "drizzle-orm";
 import { generateTrackId } from "../../utils/trackId";
 import logger from "../../services/logger";
+import { alias } from "drizzle-orm/pg-core";
 
 export const createApplication = async (req: AuthRequest, res: Response) => {
   const FLAG = "BIRTH_APPLICATION";
@@ -92,7 +93,7 @@ export const getApplications = async (req: AuthRequest, res: Response) => {
         data: null,
       });
     }
-    const applications = await db.select().from(birthApplications);
+    const applications = await db.select().from(birthApplications).orderBy();
     if (applications.length <= 0) {
       return res.status(StatusCodes.NOT_FOUND).json({
         success: false,
@@ -114,6 +115,158 @@ export const getApplications = async (req: AuthRequest, res: Response) => {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "An error occurred while fetching applications",
+      data: null,
+    });
+  }
+};
+
+export const getApplication = async (req: AuthRequest, res: Response) => {
+  const FLAG = "GET_BIRTH_APPLICATION";
+  try {
+    const { id } = req.params;
+    const userId = req.user?.userId;
+    if (!id) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "Invalid application id",
+        data: null,
+      });
+    }
+
+    if (!userId) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        success: false,
+        message: "Unauthorized",
+        data: null,
+      });
+    }
+
+    const mother = alias(birthCertificates, "mother");
+    const father = alias(birthCertificates, "father");
+
+    const [application] = await db
+      .select({
+        id: birthApplications.id,
+        trackingId: birthApplications.trackingId,
+        status: birthApplications.status,
+        stationId: birthApplications.stationId,
+        firstName: birthApplications.firstName,
+        surname: birthApplications.surname,
+        sex: birthApplications.sex,
+        dateOfBirth: birthApplications.dateOfBirth,
+        placeOfBirth: birthApplications.placeOfBirth,
+        address: birthApplications.address,
+        villageOfOrigin: birthApplications.villageOfOrigin,
+        hospitalOfBirth: birthApplications.hospitalOfBirth,
+        createdAt: birthApplications.createdAt,
+        approvedBy: birthApplications.approvedBy,
+        rejectedBy: birthApplications.rejectedBy,
+        isPrinted: birthApplications.isPrinted,
+        documents: {
+          fatherNationalId: birthApplications.fatherIdUri,
+          motherNationalId: birthApplications.motherIdUri,
+          hospitalRecord: birthApplications.hospitalRecordUri,
+        },
+        mother: {
+          nationalIdNumber: mother.nationalIdNumber,
+          firstName: mother.firstName,
+          surname: mother.surname,
+        },
+        father: {
+          nationalIdNumber: father.nationalIdNumber,
+          firstName: father.firstName,
+          surname: father.surname,
+        },
+      })
+      .from(birthApplications)
+      .leftJoin(
+        mother,
+        eq(mother.nationalIdNumber, birthApplications.mothersIdNumber),
+      )
+      .leftJoin(
+        father,
+        eq(father.nationalIdNumber, birthApplications.fathersIdNumber),
+      )
+      .where(eq(birthApplications.id, id));
+
+    if (!application) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Application not found",
+        data: null,
+      });
+    }
+
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      message: "Application fetched successfully",
+      data: application,
+    });
+  } catch (error: any) {
+    logger.error(
+      `[${FLAG}] An error occurred while fetching application: ${error.message}`,
+    );
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "An error occurred while fetching application",
+      data: null,
+    });
+  }
+};
+
+export const approveApplication = async (req: AuthRequest, res: Response) => {
+  const FLAG = "APPROVE_BIRTH_APPLICATION";
+  try {
+    const { id } = req.params;
+    const userId = req.user?.userId;
+    if (!id) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: "Invalid application id",
+        data: null,
+      });
+    }
+
+    if (!userId) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        success: false,
+        message: "Unauthorized",
+        data: null,
+      });
+    }
+
+    const application = await db
+      .update(birthApplications)
+      .set({
+        status: "APPROVED",
+        approvedBy: userId,
+        approvedAt: new Date(),
+      })
+      .where(eq(birthApplications.id, id))
+      .returning({
+        id: birthApplications.id,
+      });
+
+    if (!application) {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        success: false,
+        message: "Application not found",
+        data: null,
+      });
+    }
+
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      message: `[${FLAG}] - Application with ID: ${id} approved successfully`,
+      data: application,
+    });
+  } catch (error: any) {
+    logger.error(
+      `[${FLAG}] An error occurred while approving application: ${error.message}`,
+    );
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "An error occurred while approving application",
       data: null,
     });
   }
